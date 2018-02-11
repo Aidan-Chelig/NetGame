@@ -1,0 +1,17 @@
+{
+	"name": "NetGame",
+	"version": "1.0.0",
+	"main": "index.js",
+	"repository": "https://github.com/Aidan-Chelig/NetGame.git",
+	"author": "Aidan Chelig",
+	"license": "MIT",
+	"scripts": {
+		"eslint": "eslint -c .eslintrc.js --fix ./server ./client",
+		"eslint-nofix": "eslint -c .eslintrc.js ./server ./client"
+	},
+	"devDependencies": {
+		"babel-eslint": "^8.2.1",
+		"eslint": "^4.17.0",
+		"eslint-plugin-import": "^2.8.0"
+	}
+}

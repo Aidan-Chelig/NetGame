@@ -1,8 +1,7 @@
-const users = require('./users.js');
-const tcpserver = require('./tcpserver');
+import { Users } from './users';
+import tcpserver from './tcpserver';
 
-var userlist = new users.Users()
+var userlist = new Users();
 
 tcpserver.SetUsers(userlist);
 tcpserver.Start(3000);
-
