@@ -2,5 +2,9 @@
   "name": "NetGame-Server",
   "version": "1.0.0",
   "main": "index.js",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "hashmap": "^2.3.0",
+    "node-rsa": "^0.4.2"
+  }
 }
