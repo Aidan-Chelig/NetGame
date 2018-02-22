@@ -7,6 +7,6 @@ let key = NodeRSA();
 
 key.generateKeyPair(1024);
 
-console.log(key.getMaxMessageSize())
+console.log(key.getMaxMessageSize());
 
 tcpserver.Start(3000, userlist);
