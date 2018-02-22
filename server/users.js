@@ -35,7 +35,7 @@ class Users {
 	}
 }
 
-export default {
+module.exports = {
 	User: User,
 	Users: Users
 };

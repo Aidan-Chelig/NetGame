@@ -1,7 +1,12 @@
-import { Users } from './users';
-import tcpserver from './tcpserver';
-
+const { Users } = require('./users');
+const tcpserver = require('./tcpserver');
+const NodeRSA = require('node-rsa');
 var userlist = new Users();
 
-tcpserver.SetUsers(userlist);
-tcpserver.Start(3000);
+let key = NodeRSA();
+
+key.generateKeyPair(1024);
+
+console.log(key.getMaxMessageSize())
+
+tcpserver.Start(3000, userlist);
