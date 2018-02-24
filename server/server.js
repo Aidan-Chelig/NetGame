@@ -11,7 +11,7 @@ const connections = {
 
 // create a server and callback for onconnect then add the user to the userlist class
 const server = net.createServer(function(socket) {
-    const { debug } = this.pino;
+    const { info } = this.pino;
     
     promisify(socket.setTimeout);
     promisify(socket.write);
@@ -27,7 +27,7 @@ const server = net.createServer(function(socket) {
 
     socket.write(`netgame v.${process.env.npm_package_version}`).then(() => {
         socket.on('data', (data) => {
-            debug(data);
+            info(data);
             // wait for response, if its OK continue, anything else close connection
             // wait for a valid rsa public key of 1024 bit length
             // send our public key
