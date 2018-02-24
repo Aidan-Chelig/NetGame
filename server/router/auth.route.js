@@ -5,7 +5,7 @@ Client sends their public key -> server checks the clients public key (if key is
 Client encypts message with our public key, and sends it to server -> we decrypt public key, then encrypt message with their public key, and send it to them
 Client decrypts message, and sends the message -> Validates that message is what we sent (If not throw handshake failed error), set state.secured to true, then respond with OK.
  */
-const { BadVersion } = require('../errors');
+const { BadVersion, BadOperation } = require('../errors');
 
 const resolver = [
     /**
@@ -62,5 +62,9 @@ const resolver = [
 ];
 
 module.exports = {
-    process: ({ opcode, body, state, args }) => resolver[opcode](body, state, args)
+    process: ({ opcode, body, state, args }) => {
+        if (opcode >= resolver.length) throw new BadOperation(opcode);
+        
+        return resolver[opcode](body, state, args);
+    }
 };
