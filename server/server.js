@@ -8,7 +8,7 @@ const Router = require('./router');
 const pino = logger();
 
 // create a server and callback for onconnect then add the user to the userlist class
-const server = new Server(async function(socket) {
+const server = new Server(function(socket) {
     // Set a timeout for the handshake we dont want the client wasting our time.
     socket.setTimeout(0, () => { // TODO: Set this to a value on production.
         socket.writeAsync('TIMEOUT').then(() => {
