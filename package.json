@@ -7,10 +7,15 @@
 	"license": "MIT",
 	"scripts": {
 		"eslint": "eslint -c .eslintrc.js --fix ./server ./client",
-		"eslint-nofix": "eslint -c .eslintrc.js ./server ./client"
+		"eslint-nofix": "eslint -c .eslintrc.js ./server ./client",
+		"start": "node server/."
 	},
 	"devDependencies": {
 		"babel-eslint": "^8.2.1",
 		"eslint": "^4.17.0"
+	},
+	"dependencies": {
+		"node-rsa": "^0.4.2",
+		"pino": "^4.11.0"
 	}
 }

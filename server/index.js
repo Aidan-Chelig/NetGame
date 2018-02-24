@@ -1,12 +1,13 @@
-const { Users } = require('./users');
-const tcpserver = require('./tcpserver');
 const NodeRSA = require('node-rsa');
-var userlist = new Users();
+
+const { Users } = require('./users');
+var userlist = new Users(); // eslint-disable-line no-unused-vars
+
+const server = require('./server');
 
 let key = NodeRSA();
-
 key.generateKeyPair(1024);
 
-console.log(key.getMaxMessageSize());
-
-tcpserver.Start(3000, userlist);
+server.listen(3000, function() {
+    this.pino.info(`Server listening on ${JSON.stringify(server.address().port)}`);
+});
