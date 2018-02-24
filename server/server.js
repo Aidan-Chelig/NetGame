@@ -40,15 +40,11 @@ const server = new Server(function(socket) {
             
             if (result.shouldEnd) socket.end();
         }).catch(err => {
-            let finalError = Object.assign({}, err);
-            
             if (!(err instanceof NetworkError)) {
                 pino.error(err);
-                
-                finalError = new GeneralError();
-            }
-            
-            socket.write(finalError.toResponse());
+                socket.write(new GeneralError().toResponse());
+            } else socket.write(err.toResponse());
+            socket.end();
         });
     });
 });
