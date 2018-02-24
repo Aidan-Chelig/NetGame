@@ -10,6 +10,14 @@ class NetworkError extends Error {
     }
 }
 
+class GeneralError extends NetworkError {
+    constructor() {
+        super('An internal error occured.');
+        
+        this.code = 'GEN_ERR';
+    }
+}
+
 class BadOperation extends NetworkError {
     constructor(opcode) {
         super(`${opcode} is not a valid opcode.`);
@@ -27,6 +35,8 @@ class BadVersion extends NetworkError {
 }
 
 module.exports = {
+    NetworkError,
+    GeneralError,
     BadOperation,
     BadVersion
 };

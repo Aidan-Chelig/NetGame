@@ -11,7 +11,7 @@ const resolver = [
     /**
      * Opcode 0
      * @description Simply returns to validate the server is accepting requests.
-     * @returns Pong
+     * @returns OK
      */
     async function ping() {
         return { headers: {}, response: 'OK' };
@@ -24,7 +24,7 @@ const resolver = [
      * @throws {InvalidVersion} if version does not match.
      */
     async function checkVersion(body) {
-        if (body === process.env.npm_package_version){
+        if (body === process.env.npm_package_version) {
             return {headers: {}, response: 'OK' };
         } else {
             throw new BadVersion();
@@ -44,11 +44,19 @@ const resolver = [
     
     /**
      * Opcode 3
-     * @description 
-     * @returns 
-     * @throws 
+     * @description Start the challenge process by decrypting their challenge and creating and encrypting our own.
+     * @returns The decrypted version of their challenge and the encrypted version of ours that was generated.
      */
-    async function () {
+    async function initiateChallenge() {
+        
+    },
+    
+    /**
+     * Opcode 3
+     * @description Validates the challenge decrypted by the client.
+     * @returns OK if the challenge was accepted.
+     */
+    async function finalizeChallenge() {
         
     }
 ];

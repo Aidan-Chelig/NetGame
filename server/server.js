@@ -5,6 +5,8 @@ const State = require('./net/state');
 
 const Router = require('./router');
 
+const { NetworkError, GeneralError } = require('./errors');
+
 const pino = logger();
 
 // create a server and callback for onconnect then add the user to the userlist class
@@ -38,8 +40,15 @@ const server = new Server(function(socket) {
             
             if (result.shouldEnd) socket.end();
         }).catch(err => {
-            socket.write(err.toResponse());
-            socket.end();
+            let finalError = Object.assign({}, err);
+            
+            if (!(err instanceof NetworkError)) {
+                pino.error(err);
+                
+                finalError = new GeneralError();
+            }
+            
+            socket.write(finalError.toResponse());
         });
     });
 });
