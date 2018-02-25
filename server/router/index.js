@@ -11,12 +11,12 @@ const resolvers = [
 module.exports = {
     OPCODE_SECTION_RANGE,
     
-    async process(request) {
+    async process(server, request) {
         const { opcode } = request;
         
         if (opcode >= resolvers.length * OPCODE_SECTION_RANGE)
-            throw new BadOperation(opcode);
+            throw new BadOperation(request);
             
-        resolvers[~~Math.floor(opcode / OPCODE_SECTION_RANGE)](request);
+        resolvers[~~Math.floor(opcode / OPCODE_SECTION_RANGE)](server, request);
     }
 };

@@ -6,7 +6,7 @@ Client encypts message with our public key, and sends it to server -> we decrypt
 Client decrypts message, and sends the message -> Validates that message is what we sent (If not throw handshake failed error), set state.secured to true, then respond with OK.
  */
 const Response = require('../net/response');
-const { BadVersion, BadOperation } = require('../errors');
+const { BadVersion, BadOperation, AlreadySecured, BadKey } = require('../errors');
 
 const resolver = [
     /**
@@ -24,12 +24,13 @@ const resolver = [
      * @returns OK if version does match.
      * @throws {InvalidVersion} if version does not match.
      */
-    async function checkVersion({ data, state }) {
-        if()
+    async function checkVersion(request) {
+        const { data } = request;
+        
         if (data === process.env.npm_package_version) {
             return new Response('OK');
         } else {
-            throw new BadVersion();
+            throw new BadVersion(request);
         }
     },
 
@@ -40,8 +41,16 @@ const resolver = [
      * @returns Servers public key if clients key meets requirements.
      * @throws {BadKey} if public RSA key does not meet requirements.
      */
-    async function storeKey() {
-
+    async function storeAndGenerateKey({ config }, request) {
+        const { state, data } = request;
+        
+        try {
+            state.key.importKey(data, 'public');
+        } catch (e) {
+            throw new BadKey(request);
+        }
+        
+        return new Response(config.key.export('public'));
     },
 
     /**
@@ -64,15 +73,15 @@ const resolver = [
 ];
 
 module.exports = {
-    process: (request) => {
-        const { opcode, transgenederedOpcode } = request;
+    process: (server, request) => {
+        const { transgenederedOpcode, state } = request;
 
         if (transgenederedOpcode >= resolver.length)
-            throw new BadOperation(opcode);
+            throw new BadOperation(request);
 
-        if(request.state.secure)
-            throw new AlreadySecured();
+        if (state.secure)
+            throw new AlreadySecured(request);
 
-        return resolver[transgenederedOpcode](request);
+        return resolver[transgenederedOpcode](server, request);
     }
 };

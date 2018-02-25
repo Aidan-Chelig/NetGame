@@ -1,52 +1,54 @@
 // IMPORTANTE! DO NO PUT COLONS IN MESSAGE!!
 
 class NetworkError extends Error {
-    constructor(message) {
+    constructor(id, code, message) {
         super(message);
+        
+        this.id = id;
+        this.code = code;
     }
 
     toResponse() {
-        return `${this.code}: ${this.message}`;
+        return [
+            { id: this.id }, // Standard headers
+            { code: this.code, message: this.message } // Error body
+        ];
     }
 }
 
 class GeneralError extends NetworkError {
-    constructor() {
-        super('An internal error occured.');
-
-        this.code = 'GEN_ERR';
+    constructor({ id }) {
+        super(id, 'GEN_ERR', 'An internal error occured.');
     }
 }
 
 class BadOperation extends NetworkError {
-    constructor(opcode) {
-        super(`${opcode} is not a valid opcode.`);
-
-        this.code = 'BAD_OP';
+    constructor({ id, opcode }) {
+        super(id, 'BAD_OP', `${opcode} is not a valid opcode.`);
     }
 }
 
 class BadVersion extends NetworkError {
-    constructor(theirVersion, ourVersion) {
-        super(`Version '${theirVersion}' does not match server ('${ourVersion}').`);
-
-        this.code = 'BAD_VER';
+    constructor({ id, version }, ourVersion) {
+        super(id, 'BAD_VER', `Version '${version}' does not match server ('${ourVersion}').`);
     }
 }
 
 class BadRequest extends NetworkError {
-    constructor(id){
-        super(`Request '${id}' was not valid.`);
-
-        this.code = 'BAD_REQ';
+    constructor() {
+        super(0, 'BAD_REQ', 'Request not valid.');
     }
 }
 
 class AlreadySecured extends NetworkError {
-    constructor(){
-        super(`Access to auth layer OPCODE '${CODE}' rejected, you are already secured.`);
+    constructor({ id, opcode }) {
+        super(id, 'ALREADY_SECURE', `Access to auth layer OPCODE '${opcode}' rejected, you are already secured.`);
+    }
+}
 
-        this.code = 'ALREADY_SECURE';
+class BadKey extends NetworkError {
+    constructor({ id }) {
+        super(id, 'BAD_KEY', 'The RSA key provided was invalid.');
     }
 }
 
@@ -56,5 +58,6 @@ module.exports = {
     BadOperation,
     BadVersion,
     BadRequest,
-    AlreadySecured
+    AlreadySecured,
+    BadKey
 };

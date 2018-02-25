@@ -4,13 +4,14 @@ const State = require('./net/state');
 
 const Router = require('./router');
 
-const { logger, isJSON } = require('./util');
+const { logger, configuration, isJSON } = require('./util');
 const { NetworkError, GeneralError, BadRequest } = require('./errors');
 
 const pino = logger();
+const config = configuration({ pino });
 
 // create a server and callback for onconnect then add the user to the userlist class
-const server = new Server(function(socket) {
+const server = new Server(pino, config, function(socket) {
     // Set a timeout for the handshake we dont want the client wasting our time.
     socket.setTimeout(0, () => { // TODO: Set this to a value on production.
         socket.writeAsync('TIMEOUT').then(() => {
@@ -30,7 +31,7 @@ const server = new Server(function(socket) {
         
         const request = new Request(id, opcode, data, socket.state, args);
         
-        Router.process(request).then(response => {
+        Router.process(this, request).then(response => {
             socket.write([
                 Object.assign({ id }, response.headers),
                 Object.assign({}, response.data)
@@ -39,14 +40,12 @@ const server = new Server(function(socket) {
             if (response.shouldEnd) socket.end();
         }).catch(err => {
             if (!(err instanceof NetworkError)) {
-                pino.error(err);
-                socket.write(new GeneralError().toResponse());
+                this.pino.error(err);
+                socket.write(new GeneralError(request).toResponse());
             } else socket.write(err.toResponse());
             socket.end();
         });
     });
 });
-
-Object.assign(server, { pino });
 
 module.exports = server;
