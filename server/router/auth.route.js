@@ -17,21 +17,22 @@ const resolver = [
     async function ping() {
         return new Response('OK');
     },
-    
+
     /**
      * Opcode 1
      * @description Checks if the version matches the version the server is running.
      * @returns OK if version does match.
      * @throws {InvalidVersion} if version does not match.
      */
-    async function checkVersion({ data }) {
+    async function checkVersion({ data, state }) {
+        if()
         if (data === process.env.npm_package_version) {
             return new Response('OK');
         } else {
             throw new BadVersion();
         }
     },
-    
+
     // TODO: Define public key requirements.
     /**
      * Opcode 2
@@ -40,35 +41,38 @@ const resolver = [
      * @throws {BadKey} if public RSA key does not meet requirements.
      */
     async function storeKey() {
-        
+
     },
-    
+
     /**
      * Opcode 3
      * @description Start the challenge process by decrypting their challenge and creating and encrypting our own.
      * @returns The decrypted version of their challenge and the encrypted version of ours that was generated.
      */
     async function initiateChallenge() {
-        
+
     },
-    
+
     /**
      * Opcode 3
      * @description Validates the challenge decrypted by the client.
      * @returns OK if the challenge was accepted.
      */
     async function finalizeChallenge() {
-         
+
     }
 ];
 
 module.exports = {
     process: (request) => {
         const { opcode, transgenederedOpcode } = request;
-        
+
         if (transgenederedOpcode >= resolver.length)
             throw new BadOperation(opcode);
-        
+
+        if(request.state.secure)
+            throw new AlreadySecured();
+
         return resolver[transgenederedOpcode](request);
     }
 };

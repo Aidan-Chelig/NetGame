@@ -4,7 +4,7 @@ class NetworkError extends Error {
     constructor(message) {
         super(message);
     }
-    
+
     toResponse() {
         return `${this.code}: ${this.message}`;
     }
@@ -13,7 +13,7 @@ class NetworkError extends Error {
 class GeneralError extends NetworkError {
     constructor() {
         super('An internal error occured.');
-        
+
         this.code = 'GEN_ERR';
     }
 }
@@ -21,7 +21,7 @@ class GeneralError extends NetworkError {
 class BadOperation extends NetworkError {
     constructor(opcode) {
         super(`${opcode} is not a valid opcode.`);
-        
+
         this.code = 'BAD_OP';
     }
 }
@@ -42,10 +42,19 @@ class BadRequest extends NetworkError {
     }
 }
 
+class AlreadySecured extends NetworkError {
+    constructor(){
+        super(`Access to auth layer OPCODE '${CODE}' rejected, you are already secured.`);
+
+        this.code = 'ALREADY_SECURE';
+    }
+}
+
 module.exports = {
     NetworkError,
     GeneralError,
     BadOperation,
     BadVersion,
-    BadRequest
+    BadRequest,
+    AlreadySecured
 };
