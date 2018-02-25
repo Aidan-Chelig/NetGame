@@ -5,6 +5,7 @@ Client sends their public key -> server checks the clients public key (if key is
 Client encypts message with our public key, and sends it to server -> we decrypt public key, then encrypt message with their public key, and send it to them
 Client decrypts message, and sends the message -> Validates that message is what we sent (If not throw handshake failed error), set state.secured to true, then respond with OK.
  */
+const Response = require('../net/response');
 const { BadVersion, BadOperation } = require('../errors');
 
 const resolver = [
@@ -14,7 +15,7 @@ const resolver = [
      * @returns OK
      */
     async function ping() {
-        return { headers: {}, response: 'OK' };
+        return new Response('OK');
     },
     
     /**
@@ -23,9 +24,9 @@ const resolver = [
      * @returns OK if version does match.
      * @throws {InvalidVersion} if version does not match.
      */
-    async function checkVersion(body) {
-        if (body === process.env.npm_package_version) {
-            return {headers: {}, response: 'OK' };
+    async function checkVersion({ data }) {
+        if (data === process.env.npm_package_version) {
+            return new Response('OK');
         } else {
             throw new BadVersion();
         }
@@ -57,14 +58,17 @@ const resolver = [
      * @returns OK if the challenge was accepted.
      */
     async function finalizeChallenge() {
-        
+         
     }
 ];
 
 module.exports = {
-    process: ({ opcode, body, state, args }) => {
-        if (opcode >= resolver.length) throw new BadOperation(opcode);
+    process: (request) => {
+        const { opcode, transgenederedOpcode } = request;
         
-        return resolver[opcode](body, state, args);
+        if (transgenederedOpcode >= resolver.length)
+            throw new BadOperation(opcode);
+        
+        return resolver[transgenederedOpcode](request);
     }
 };

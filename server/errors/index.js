@@ -34,9 +34,18 @@ class BadVersion extends NetworkError {
     }
 }
 
+class BadRequest extends NetworkError {
+    constructor(id){
+        super(`Request '${id}' was not valid.`);
+
+        this.code = 'BAD_REQ';
+    }
+}
+
 module.exports = {
     NetworkError,
     GeneralError,
     BadOperation,
-    BadVersion
+    BadVersion,
+    BadRequest
 };

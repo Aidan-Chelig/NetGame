@@ -1,11 +1,11 @@
-const logger = require('./logger');
-
 const Server = require('./net/server');
+const Request = require('./net/request');
 const State = require('./net/state');
 
 const Router = require('./router');
 
-const { NetworkError, GeneralError } = require('./errors');
+const { logger, isJSON } = require('./util');
+const { NetworkError, GeneralError, BadRequest } = require('./errors');
 
 const pino = logger();
 
@@ -22,23 +22,21 @@ const server = new Server(function(socket) {
     socket.state = new State();
     
     // Primary request/data handler.
-    socket.on('data', (data) => {
-        const [ opcode, body, reqId, ...args ] = data;
-        const request = {
-            reqId,
-            opcode,
-            body,
-            state: socket.state,
-            args
-        };
+    socket.on('data', (packet) => {
+        if (!isJSON(packet.toString('utf-8')))
+            return socket.write(new BadRequest().toResponse());
         
-        Router.process(request).then(result => {
+        const [ id = 0, opcode = 0, data = '', ...args ] = JSON.parse(packet.toString('utf-8'));
+        
+        const request = new Request(id, opcode, data, socket.state, args);
+        
+        Router.process(request).then(response => {
             socket.write([
-                Object.assign({ reqId }, result.headers),
-                Object.assign({}, result.response)
+                Object.assign({ id }, response.headers),
+                Object.assign({}, response.data)
             ]);
             
-            if (result.shouldEnd) socket.end();
+            if (response.shouldEnd) socket.end();
         }).catch(err => {
             if (!(err instanceof NetworkError)) {
                 pino.error(err);
