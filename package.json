@@ -6,13 +6,15 @@
 	"author": "Aidan Chelig",
 	"license": "MIT",
 	"scripts": {
-		"eslint": "eslint -c .eslintrc.js --fix ./src ./client",
-		"eslint-nofix": "eslint -c .eslintrc.js ./src ./client",
+		"eslint": "eslint -c .eslintrc.js --fix ./src",
+		"eslint-nofix": "eslint -c .eslintrc.js ./src",
 		"start": "node src/."
 	},
 	"devDependencies": {
 		"babel-eslint": "^8.2.1",
-		"eslint": "^4.17.0"
+		"eslint": "^4.17.0",
+		"eslint-config-airbnb-base": "^12.1.0",
+		"eslint-plugin-import": "^2.9.0"
 	},
 	"dependencies": {
 		"node-rsa": "^0.4.2",

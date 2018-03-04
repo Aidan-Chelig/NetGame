@@ -8,23 +8,11 @@ module.exports = {
 		ecmaVersion: 7,
 		sourceType: 'module'
 	},
-	extends: 'eslint:recommended',
+	extends: 'airbnb-base',
 	rules: {
-		indent: [
-			'error',
-			4
-		],
 		'linebreak-style': [
 			'error',
 			'unix'
-		],
-		quotes: [
-			'error',
-			'single'
-		],
-		semi: [
-			'error',
-			'always'
 		]
 	}
 }
