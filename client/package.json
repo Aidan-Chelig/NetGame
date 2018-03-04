@@ -1,9 +1,0 @@
-{
-  "name": "NetGame-Client",
-  "version": "1.0.0",
-  "main": "index.js",
-  "license": "MIT",
-  "dependencies": {
-    "node-rsa": "^0.4.2"
-  }
-}
