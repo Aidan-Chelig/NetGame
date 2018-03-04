@@ -4,7 +4,6 @@
 	"main": "index.js",
 	"repository": "https://github.com/Aidan-Chelig/NetGame.git",
 	"author": "Aidan Chelig",
-	"license": "MIT",
 	"scripts": {
 		"eslint": "eslint -c .eslintrc.js --fix ./src",
 		"eslint-nofix": "eslint -c .eslintrc.js ./src",
